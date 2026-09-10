@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
+/*
+  Zus & Zo Suriname - landing page (Overhaul redesign)
+  Palette: LOCKED. Warm brand orange + light brand aqua + warm off-black ink,
+  on a warm off-white paper. One accent (orange). Aqua is a surface tint, never
+  a second accent. The single colour-block beat is the orange "wave" band.
+  Type: Poppins (display) + Rubik (text). Italic emphasis stays in-family.
+  Shape: soft organic radius scale; buttons are full-pill.
+*/
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #fbf7ef;
+  --paper-2: #f3ecdd;
+  --ink: #221f1a;
+  --ink-soft: #574f45;
+
+  --orange: #d67413;
+  --orange-ink: #fff6ec;
+
+  --aqua: #d3ebf3;
+  --aqua-2: #b6dfea;
+  --aqua-ink: #0e3a45;
+
+  --line: rgba(34, 31, 26, 0.14);
+  --line-strong: rgba(34, 31, 26, 0.26);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 26px;
+
+  /*
+   * Theme is LOCKED to light. Zus & Zo's identity is a sunny white-and-aqua
+   * base with warm orange; a dark treatment loses the brand. Section 8.C
+   * (brand insists on one mode) and Section 4.11 (a design may commit to a
+   * single look) both permit this. Colours are painted explicitly below.
+   */
+  color-scheme: light;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-orange: var(--orange);
+  --color-orange-ink: var(--orange-ink);
+  --color-aqua: var(--aqua);
+  --color-aqua-2: var(--aqua-2);
+  --color-aqua-ink: var(--aqua-ink);
+  --color-line: var(--line);
+
+  --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-poppins), var(--font-rubik), ui-sans-serif, sans-serif;
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--orange);
+  color: var(--orange-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Emphasis: italic of the SAME family, with descender clearance (y g j p q) */
+.em-italic {
+  font-style: italic;
+  display: inline-block;
+  line-height: 1.15;
+  padding-bottom: 0.12em;
+}
+
+/* Hairline grain, fixed, non-interactive, never on a scrolling container */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.025;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
