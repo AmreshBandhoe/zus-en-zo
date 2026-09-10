@@ -42,3 +42,6 @@ next-env.d.ts
 
 # project source assets (raw originals, not needed for the build)
 /source-photos/
+
+# local mirror of the live site, reference only
+/www.zusenzosuriname.com/
