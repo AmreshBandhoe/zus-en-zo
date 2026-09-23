@@ -1,19 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useMotionValueEvent } from "motion/react";
 import { List, X } from "@phosphor-icons/react";
-import { PrimaryCta } from "./ui";
-
-const LINKS = [
-  { href: "#top", label: "Home" },
-  { href: "#over-ons", label: "Over ons" },
-  { href: "#menu", label: "Menu" },
-  { href: "#kamers", label: "Kamers" },
-  { href: "#tours", label: "Tours" },
-];
+import { NAV_LINKS } from "@/lib/site";
+import { IconButton, PrimaryCta, RESERVE_HREF } from "./ui";
+import { EASE } from "./motion";
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
@@ -21,7 +15,27 @@ export function SiteNav() {
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
 
-  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
+  // Only flip state when the boolean actually changes — a raw `v > 24` on
+  // every motion frame would re-render the header up to 120×/s while scrolling.
+  useMotionValueEvent(scrollY, "change", (v) =>
+    setScrolled((prev) => (prev === v > 24 ? prev : v > 24)),
+  );
+
+  // Escape closes the mobile menu; body scroll is locked while it's open so
+  // the page behind can't drift under the fixed header.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [open]);
 
   return (
     <header
@@ -32,7 +46,7 @@ export function SiteNav() {
           : "border-b border-transparent")
       }
     >
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto flex h-16 max-w-container px-4 sm:px-6 lg:px-10">
         <Link
           href="#top"
           aria-label="Zus & Zo, naar boven"
@@ -48,8 +62,8 @@ export function SiteNav() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-7 lg:flex">
-          {LINKS.map((l) => (
+        <nav aria-label="Hoofdnavigatie" className="hidden items-center gap-7 lg:flex">
+          {NAV_LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
@@ -61,20 +75,25 @@ export function SiteNav() {
         </nav>
 
         <div className="hidden lg:block">
-          <PrimaryCta href="#reserveren" className="h-10 px-5 text-[0.9rem]">
+          <PrimaryCta href={RESERVE_HREF} className="h-10 px-5 text-[0.9rem]">
             Reserveren
           </PrimaryCta>
         </div>
 
-        <button
-          type="button"
-          aria-label={open ? "Menu sluiten" : "Menu openen"}
-          aria-expanded={open}
+        <IconButton
+          label={open ? "Menu sluiten" : "Menu openen"}
           onClick={() => setOpen((v) => !v)}
-          className="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-ink lg:hidden"
+          className="h-10 w-10 lg:hidden"
         >
-          {open ? <X size={18} weight="bold" /> : <List size={18} weight="bold" />}
-        </button>
+          {/* Both icons stay mounted; toggling visibility avoids the icon
+              remounting on every open/close. */}
+          <span aria-hidden="true" className={open ? "hidden" : "contents"}>
+            <List size={18} weight="bold" />
+          </span>
+          <span aria-hidden="true" className={open ? "contents" : "hidden"}>
+            <X size={18} weight="bold" />
+          </span>
+        </IconButton>
       </div>
 
       <AnimatePresence>
@@ -83,11 +102,11 @@ export function SiteNav() {
             initial={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
             animate={reduce ? { opacity: 1 } : { opacity: 1, height: "auto" }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.3, ease: EASE }}
             className="overflow-hidden border-t border-line bg-paper lg:hidden"
           >
-            <div className="flex flex-col gap-1 px-4 py-4 sm:px-6">
-              {LINKS.map((l) => (
+            <nav aria-label="Mobiele navigatie" className="flex flex-col gap-1 px-4 py-4 sm:px-6">
+              {NAV_LINKS.map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}
@@ -97,13 +116,10 @@ export function SiteNav() {
                   {l.label}
                 </Link>
               ))}
-              <PrimaryCta
-                href="#reserveren"
-                className="mt-3 w-full"
-              >
+              <PrimaryCta href={RESERVE_HREF} className="mt-3 w-full">
                 Reserveren
               </PrimaryCta>
-            </div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>

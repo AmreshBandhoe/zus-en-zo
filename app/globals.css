@@ -49,6 +49,13 @@
   --color-aqua-2: var(--aqua-2);
   --color-aqua-ink: var(--aqua-ink);
   --color-line: var(--line);
+  /* Registers border-line-strong / divide-line-strong utilities, so the old
+     inline-style fallbacks (`style={{ borderColor: "var(--line-strong)" }}`)
+     are no longer needed. */
+  --color-line-strong: var(--line-strong);
+
+  /* Single container width for every section (was a repeated max-w-[1400px]). */
+  --container-container: 1400px;
 
   --font-sans: var(--font-rubik), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-poppins), var(--font-rubik), ui-sans-serif, sans-serif;
@@ -56,10 +63,6 @@
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
-}
-
-* {
-  border-color: var(--line);
 }
 
 html {

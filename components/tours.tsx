@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "@phosphor-icons/react";
 import { IMAGES } from "@/lib/images";
-import { GhostCta } from "./ui";
+import { GhostCta, IconButton, RESERVE_HREF } from "./ui";
 import { Reveal } from "./reveal";
 
 const TOURS = [
@@ -41,6 +41,33 @@ const TOURS = [
 
 export function Tours() {
   const track = useRef<HTMLUListElement>(null);
+  // Drives the arrow disabled states; also refreshed on resize.
+  const [edges, setEdges] = useState({ start: true, end: false });
+
+  const measure = useCallback(() => {
+    const el = track.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    setEdges((prev) => {
+      const next = {
+        start: el.scrollLeft <= 2,
+        end: max <= 2 || el.scrollLeft >= max - 2,
+      };
+      return prev.start === next.start && prev.end === next.end ? prev : next;
+    });
+  }, []);
+
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    el.addEventListener("scroll", measure, { passive: true });
+    window.addEventListener("resize", measure);
+    measure();
+    return () => {
+      el.removeEventListener("scroll", measure);
+      window.removeEventListener("resize", measure);
+    };
+  }, [measure]);
 
   const nudge = (dir: 1 | -1) => {
     const el = track.current;
@@ -52,44 +79,36 @@ export function Tours() {
 
   return (
     <section id="tours" className="scroll-mt-20 overflow-hidden py-12 lg:py-16">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-container px-4 sm:px-6 lg:px-10">
         <Reveal className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
           <h2 className="max-w-[18ch] font-display text-3xl leading-[1.1] tracking-tight text-ink sm:text-4xl lg:text-[2.6rem]">
             Tours met gidsen die er zelf wonen.
           </h2>
           <div className="hidden gap-2 sm:flex">
-            <button
-              type="button"
-              onClick={() => nudge(-1)}
-              aria-label="Vorige tours"
-              className="grid h-11 w-11 place-items-center rounded-full border text-ink transition-colors hover:bg-ink/[0.04]"
-              style={{ borderColor: "var(--line-strong)" }}
-            >
+            <IconButton label="Vorige tours" onClick={() => nudge(-1)} disabled={edges.start}>
               <ArrowLeft size={18} />
-            </button>
-            <button
-              type="button"
-              onClick={() => nudge(1)}
-              aria-label="Volgende tours"
-              className="grid h-11 w-11 place-items-center rounded-full border text-ink transition-colors hover:bg-ink/[0.04]"
-              style={{ borderColor: "var(--line-strong)" }}
-            >
+            </IconButton>
+            <IconButton label="Volgende tours" onClick={() => nudge(1)} disabled={edges.end}>
               <ArrowRight size={18} />
-            </button>
+            </IconButton>
           </div>
         </Reveal>
       </div>
 
+      {/* tabIndex/aria make the overflow region keyboard-scrollable with the
+          arrow keys, and screen readers announce it as a list to operate. */}
       <ul
         ref={track}
-        className="hide-scrollbar mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-pl-4 px-4 pb-1 sm:scroll-pl-6 sm:px-6 lg:mt-10 lg:scroll-pl-10 lg:px-10"
+        tabIndex={0}
+        aria-label="Tours, scrollbare lijst"
+        className="hide-scrollbar mt-8 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-pl-4 px-4 pb-1 focus-visible:outline-offset-[-4px] sm:scroll-pl-6 sm:px-6 lg:mt-10 lg:scroll-pl-10 lg:px-10"
       >
         {TOURS.map((t) => (
           <li
             key={t.name}
             className="w-[78vw] shrink-0 snap-start sm:w-[44vw] lg:w-[24rem]"
           >
-            <Link href="#reserveren" className="group flex h-full flex-col">
+            <Link href={RESERVE_HREF} className="group flex h-full flex-col">
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
                 <Image
                   src={t.img.src}
@@ -127,13 +146,13 @@ export function Tours() {
         ))}
       </ul>
 
-      <div className="mx-auto mt-6 flex max-w-[1400px] flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-10">
+      <div className="mx-auto mt-6 flex max-w-container flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-10">
         <p className="max-w-[52ch] text-[0.85rem] leading-relaxed text-ink-soft">
           Een greep uit ruim 25 tours en workshops, van stadswandeling tot
           meerdaagse jungletrek. Richtprijzen per persoon, definitief bij boeking
           en afhankelijk van groepsgrootte en seizoen.
         </p>
-        <GhostCta href="#reserveren">Reserveren</GhostCta>
+        <GhostCta href={RESERVE_HREF}>Reserveren</GhostCta>
       </div>
     </section>
   );

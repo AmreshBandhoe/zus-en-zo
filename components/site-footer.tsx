@@ -1,20 +1,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { InstagramLogo, FacebookLogo } from "@phosphor-icons/react/dist/ssr";
-import { PrimaryCta } from "./ui";
+import { CONTACT, FOOTER_LINKS, SITE_URL, SOCIAL } from "@/lib/site";
+import { PrimaryCta, RESERVE_HREF } from "./ui";
 
-const NAV = [
-  { href: "#over-ons", label: "Over ons" },
-  { href: "#menu", label: "Menu" },
-  { href: "#kamers", label: "Kamers" },
-  { href: "#tours", label: "Tours" },
-  { href: "#contact", label: "Contact" },
-];
+const SOCIAL_ICONS = {
+  Instagram: InstagramLogo,
+  Facebook: FacebookLogo,
+} as const;
 
 export function SiteFooter() {
   return (
     <footer className="border-t border-line-strong bg-paper-2">
-      <div className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
+      <div className="mx-auto max-w-container px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
         <div className="grid grid-cols-1 gap-x-8 gap-y-12 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <Image
@@ -29,13 +27,13 @@ export function SiteFooter() {
               pand in hartje Paramaribo.
             </p>
             <div className="mt-6">
-              <PrimaryCta href="#reserveren">Reserveren</PrimaryCta>
+              <PrimaryCta href={RESERVE_HREF}>Reserveren</PrimaryCta>
             </div>
           </div>
 
-          <nav className="lg:col-span-3 lg:col-start-7">
+          <nav aria-label="Voettekst" className="lg:col-span-3 lg:col-start-7">
             <ul className="space-y-2">
-              {NAV.map((l) => (
+              {FOOTER_LINKS.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
@@ -50,48 +48,61 @@ export function SiteFooter() {
 
           <div className="lg:col-span-3 lg:col-start-10">
             <address className="not-italic text-[0.95rem] leading-relaxed text-ink-soft">
-              Grote Combéweg 13A
+              {CONTACT.street}
               <br />
-              Paramaribo, Suriname
+              {CONTACT.locality}, {CONTACT.country}
               <br />
-              <a
-                href="tel:+597520904"
-                className="transition-colors hover:text-ink"
-              >
-                +597 520-904
+              <a href={CONTACT.phoneHref} className="transition-colors hover:text-ink">
+                {CONTACT.phoneDisplay}
               </a>
               <br />
               <a
-                href="mailto:info@zusenzosuriname.com"
+                href={`mailto:${CONTACT.email}`}
                 className="transition-colors hover:text-ink"
               >
-                info@zusenzosuriname.com
+                {CONTACT.email}
               </a>
             </address>
-            <div className="mt-5 flex gap-3">
-              <a
-                href="https://www.instagram.com/"
-                aria-label="Instagram"
-                className="grid h-10 w-10 place-items-center rounded-full border text-ink transition-colors hover:bg-ink/[0.04]"
-                style={{ borderColor: "var(--line-strong)" }}
-              >
-                <InstagramLogo size={18} />
-              </a>
-              <a
-                href="https://www.facebook.com/"
-                aria-label="Facebook"
-                className="grid h-10 w-10 place-items-center rounded-full border text-ink transition-colors hover:bg-ink/[0.04]"
-                style={{ borderColor: "var(--line-strong)" }}
-              >
-                <FacebookLogo size={18} />
-              </a>
-            </div>
+            {/*
+              * Social profiles are not confirmed yet — SOCIAL in lib/site.ts
+              * is empty until the real Zus & Zo URLs arrive, so no dead links
+              * to platform roots ship to production.
+              */}
+            {SOCIAL.length > 0 && (
+              <div className="mt-5 flex gap-3">
+                {SOCIAL.map(({ label, href }) => {
+                  const Icon = SOCIAL_ICONS[label as keyof typeof SOCIAL_ICONS];
+                  return (
+                    <a
+                      key={label}
+                      href={href}
+                      aria-label={label}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex"
+                    >
+                      <span className="grid h-10 w-10 place-items-center rounded-full border border-line-strong text-ink transition-colors hover:bg-ink/[0.04]">
+                        {Icon ? <Icon size={18} /> : label}
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
 
         <div className="mt-16 flex flex-col gap-2 border-t border-line pt-6 text-[0.82rem] text-ink-soft sm:flex-row sm:justify-between">
           <p>&copy; {new Date().getFullYear()} Zus &amp; Zo Suriname</p>
-          <p>Paramaribo</p>
+          <p>
+            <a
+              href={SITE_URL}
+              className="transition-colors hover:text-ink"
+            >
+              zusenzosuriname.com
+            </a>
+            · Paramaribo
+          </p>
         </div>
       </div>
     </footer>
