@@ -1,4 +1,5 @@
 import { MapPin, Clock, Phone } from "@phosphor-icons/react/dist/ssr";
+import { CONTACT, RESERVATION_MAILTO } from "@/lib/site";
 import { Eyebrow, PrimaryCta } from "./ui";
 import { Reveal } from "./reveal";
 
@@ -6,19 +7,19 @@ const INFO = [
   {
     icon: MapPin,
     title: "Adres",
-    lines: ["Grote Combéweg 13A", "Paramaribo, Suriname"],
+    lines: [CONTACT.street, `${CONTACT.locality}, ${CONTACT.country}`],
     note: "Tegenover de Palmentuin, één minuut lopen naar de Wakapasi en het uitgaanscentrum.",
   },
   {
     icon: Clock,
     title: "Open",
-    lines: ["Grand café  dagelijks 09:00 tot 21:00", "Ontbijt, lunch, diner of chillen"],
+    lines: [`Grand café dagelijks ${CONTACT.openingHours}`, "Ontbijt, lunch, diner of chillen"],
     note: "Surinaamse, Europese en Caribische keuken. Vega en vegan ook.",
   },
   {
     icon: Phone,
     title: "Contact",
-    lines: ["+597 520-904", "info@zusenzosuriname.com"],
+    lines: [CONTACT.phoneDisplay, CONTACT.email],
     note: "We halen je ook op van de luchthaven, zo'n 80 minuten rijden.",
   },
 ];
@@ -32,7 +33,7 @@ const OPTIONS = [
 export function Visit() {
   return (
     <section id="contact" className="scroll-mt-20 py-16 lg:py-24">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto max-w-container px-4 sm:px-6 lg:px-10">
         <Reveal className="max-w-[36ch]">
           <Eyebrow>Contact</Eyebrow>
           <h2 className="mt-4 font-display text-3xl leading-tight tracking-tight text-ink sm:text-4xl lg:text-[2.9rem]">
@@ -71,15 +72,13 @@ export function Visit() {
                 dezelfde dag, in het Nederlands of Engels.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <PrimaryCta href="mailto:info@zusenzosuriname.com?subject=Reservering%20Zus%20%26%20Zo">
-                  Reserveren
-                </PrimaryCta>
+                {/* Prefilled subject + body template (see lib/site.ts). */}
+                <PrimaryCta href={RESERVATION_MAILTO}>Reserveren</PrimaryCta>
                 <a
-                  href="tel:+597520904"
-                  className="inline-flex h-12 items-center justify-center rounded-full border px-6 text-[0.95rem] font-medium tracking-tight text-ink transition-colors hover:bg-ink/[0.04]"
-                  style={{ borderColor: "var(--line-strong)" }}
+                  href={CONTACT.phoneHref}
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-line-strong px-6 text-[0.95rem] font-medium tracking-tight text-ink transition-colors hover:bg-ink/[0.04]"
                 >
-                  Bel +597 520-904
+                  Bel {CONTACT.phoneDisplay}
                 </a>
               </div>
             </Reveal>
