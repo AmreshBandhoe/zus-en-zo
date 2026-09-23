@@ -44,21 +44,30 @@ field names `fld_8187097` etc.).
 ## Images
 
 Zus & Zo's own photography, supplied by the venue. Raw originals live in
-`source-photos/` (git-ignored); processed web versions are in `public/images/`.
-The `tour-*` thumbnails and `tour-fredberg.jpg` are cropped from
-`source-photos/ZusZo-Top-10-Tours-poster-80x80cm-1-scaled.jpg` with `sharp`.
+`source-photos/` and the `Kamer *` folders (git-ignored); processed web versions
+are in `public/images/`. The `tour-*` thumbnails and `tour-fredberg.jpg` are
+cropped from `source-photos/ZusZo-Top-10-Tours-poster-80x80cm-1-scaled.jpg` with
+`sharp`; the `public/images/gallery/` set is built by
+`node scripts/process-photos.mjs` from the raw originals (edit its manifest to
+recurate, then re-run — outputs are committed).
 
-| `lib/images.ts` key | File | Placement |
-| --- | --- | --- |
-| `hero` | `building.jpg` | Hero, right |
-| `worldRestaurant` | `dish-moksi.jpg` | Worlds grid |
-| `worldCulture` | `booking-board.jpg` | Worlds grid |
-| `worldTours` | `tour-fredberg.jpg` | Worlds grid |
-| `worldGuesthouse` | `breakfast.jpg` | Worlds grid |
-| `food` | `menu-table.jpg` | `#menu` spread |
-| `guesthouseBand` | `building-sunset.jpg` | `#kamers` band |
-| `tours[0..3]` | `tour-bigipan / -citytour / -dolphin / -jawjaw` | `#tours` carousel |
-| `story` | `toast-group.jpg` | `#over-ons` |
+Motion budget: **each subject animates in exactly one place.** Four slots
+crossfade through an `Img[]` via `<Gallery>` (`components/gallery.tsx`) — slow
+fade + Ken Burns drift, no controls, pauses off-screen / on a hidden tab, and
+collapses to the first frame under reduced motion. Everything else is a single
+still `Img`.
+
+| `lib/images.ts` key | Frames | Placement | Motion |
+| --- | --- | --- | --- |
+| `heroSet` | `building` · `building-sunset` | Hero, right | animated — *the pand* |
+| `foodSet` | `menu-table` + 5 dishes | `#menu` spread | animated — *the food* |
+| `storySet` | `toast-group` + 3 table shots | `#over-ons` | animated — *the people* |
+| `roomsSet` | `gallery/room-{drie,vier,vijf,zes}` | `#kamers` band | animated — *the rooms* |
+| `worldRestaurant` | `dish-moksi` | Worlds grid | still |
+| `worldCulture` | `booking-board` | Worlds grid | still |
+| `worldTours` | `tour-fredberg` | Worlds grid | still |
+| `worldGuesthouse` | `breakfast` | Worlds grid | still |
+| `tours[0..3]` | `tour-bigipan / -citytour / -dolphin / -jawjaw` | `#tours` carousel | still |
 
 To swap an image, drop a replacement into `public/images/` and update the entry
 in `lib/images.ts` (src, alt, w, h).

@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { IMAGES } from "@/lib/images";
+import { Gallery } from "./gallery";
 import { PrimaryCta } from "./ui";
 import { Reveal } from "./reveal";
 import { Wave } from "./wave";
@@ -30,12 +30,10 @@ export function FoodSpread() {
               as="figure"
               className="relative order-1 aspect-[16/11] w-full overflow-hidden rounded-lg lg:order-2 lg:col-span-7 lg:aspect-[16/12]"
             >
-              <Image
-                src={IMAGES.food.src}
-                alt={IMAGES.food.alt}
-                fill
+              <Gallery
+                images={IMAGES.foodSet}
                 sizes="(max-width: 1024px) 100vw, 58vw"
-                className="object-cover"
+                interval={6500}
               />
             </Reveal>
 

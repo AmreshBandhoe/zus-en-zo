@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { IMAGES } from "@/lib/images";
+import { Gallery } from "./gallery";
 import { PrimaryCta, GhostCta } from "./ui";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -64,13 +64,10 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.1, ease: EASE }}
           className="relative aspect-[4/3] w-full overflow-hidden rounded-lg lg:aspect-[7/6]"
         >
-          <Image
-            src={IMAGES.hero.src}
-            alt={IMAGES.hero.alt}
-            fill
-            priority
+          <Gallery
+            images={IMAGES.heroSet}
             sizes="(max-width: 1024px) 100vw, 40vw"
-            className="object-cover"
+            preloadFirst
           />
         </motion.figure>
       </div>

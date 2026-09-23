@@ -42,6 +42,14 @@ next-env.d.ts
 
 # project source assets (raw originals, not needed for the build)
 /source-photos/
+/Kamer*/
+# stray WordPress-export room shots at the repo root
+/2.png
+/3.png
+/4.png
+/7.png
+/24.png
+/25*.png
 
 # local mirror of the live site, reference only
 /www.zusenzosuriname.com/

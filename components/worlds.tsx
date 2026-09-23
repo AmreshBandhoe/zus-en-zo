@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
-import { IMAGES } from "@/lib/images";
+import { IMAGES, type Img } from "@/lib/images";
 import { Reveal, RevealGroup, RevealItem } from "./reveal";
 
 const WORLDS: {
@@ -9,7 +9,7 @@ const WORLDS: {
   kicker: string;
   title: string;
   body: string;
-  img: { src: string; alt: string; w: number; h: number };
+  img: Img;
   span: string;
   ratio: string;
   objectPos?: string;

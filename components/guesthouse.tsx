@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { IMAGES } from "@/lib/images";
+import { Gallery } from "./gallery";
 import { PrimaryCta } from "./ui";
 import { Reveal } from "./reveal";
 
@@ -17,13 +17,10 @@ export function Guesthouse() {
         as="figure"
         className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[3/2] lg:aspect-[2/1]"
       >
-        <Image
-          src={IMAGES.guesthouseBand.src}
-          alt={IMAGES.guesthouseBand.alt}
-          fill
+        <Gallery
+          images={IMAGES.roomsSet}
           sizes="100vw"
-          style={{ objectPosition: "50% 32%" }}
-          className="object-cover"
+          objectPosition="50% 32%"
         />
       </Reveal>
 

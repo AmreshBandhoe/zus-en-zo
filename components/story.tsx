@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { IMAGES } from "@/lib/images";
+import { Gallery } from "./gallery";
 import { Reveal } from "./reveal";
 
 export function Story() {
@@ -27,12 +27,9 @@ export function Story() {
 
         <Reveal className="lg:col-span-4 lg:col-start-9 lg:pt-10">
           <figure className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
-            <Image
-              src={IMAGES.story.src}
-              alt={IMAGES.story.alt}
-              fill
+            <Gallery
+              images={IMAGES.storySet}
               sizes="(max-width: 1024px) 100vw, 33vw"
-              className="object-cover"
             />
           </figure>
         </Reveal>
